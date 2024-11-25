@@ -6,7 +6,14 @@ import {
   ListItemText,
   Typography,
   Button,
+  ListItemIcon,
 } from "@mui/material";
+import {
+  Mail as MailIcon,
+  CheckCircleOutline as ApprovedIcon,
+  Settings as SettingsIcon,
+  Logout as LogoutIcon,
+} from "@mui/icons-material";
 import { useNavigate } from "react-router-dom";
 
 const Sidebar = ({ onContentChange }) => {
@@ -23,6 +30,13 @@ const Sidebar = ({ onContentChange }) => {
     navigate("/"); // Redirect to login page
   };
 
+  // Define icons for each button
+  const menuItems = [
+    { name: "Inbox", icon: <MailIcon /> },
+    { name: "Approved", icon: <ApprovedIcon /> },
+    { name: "Settings", icon: <SettingsIcon /> },
+  ];
+
   return (
     <Box
       sx={{
@@ -35,43 +49,50 @@ const Sidebar = ({ onContentChange }) => {
         justifyContent: "space-between",
       }}
     >
-      <div>
+      <div style={{ position: "fixed", width: "250px" }}>
         <Typography variant="h6" gutterBottom>
           Dashboard
         </Typography>
         <List>
-          {["Inbox", "Profile", "Settings"].map((buttonName) => (
+          {menuItems.map(({ name, icon }) => (
             <ListItem
               button
-              key={buttonName}
-              onClick={() => handleButtonClick(buttonName)}
+              key={name}
+              onClick={() => handleButtonClick(name)}
               sx={{
                 backgroundColor:
-                  activeButton === buttonName ? "#1976d2" : "transparent",
-                color: activeButton === buttonName ? "#fff" : "#000",
+                  activeButton === name ? "#1976d2" : "whitesmoke",
+                color: activeButton === name ? "#fff" : "#000",
                 borderRadius: "4px",
                 marginBottom: "8px",
                 "&:hover": {
                   backgroundColor:
-                    activeButton === buttonName ? "#1976d2" : "#e0e0e0",
+                    activeButton === name ? "#1976d2" : "#e0e0e0",
                 },
               }}
             >
-              <ListItemText primary={buttonName} />
+              <ListItemIcon
+                sx={{
+                  color: activeButton === name ? "#fff" : "#000",
+                }}
+              >
+                {icon}
+              </ListItemIcon>
+              <ListItemText primary={name} />
             </ListItem>
           ))}
+          <Button
+            color="error"
+            onClick={handleLogout}
+            startIcon={<LogoutIcon />}
+            sx={{
+              marginTop: "16px",
+            }}
+          >
+            Logout
+          </Button>
         </List>
       </div>
-      <Button
-        variant="contained"
-        color="error"
-        onClick={handleLogout}
-        sx={{
-          marginTop: "16px",
-        }}
-      >
-        Logout
-      </Button>
     </Box>
   );
 };
