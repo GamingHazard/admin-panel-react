@@ -4,7 +4,7 @@ import axios from "axios";
 const styles = {
   container: {
     fontFamily: "Arial, sans-serif",
-    backgroundColor: "whitesmoke",
+    backgroundColor: "#fbfbda",
     flex: 1,
     padding: "20px",
   },
@@ -232,7 +232,9 @@ const Approved = () => {
 
   return (
     <div style={styles.container}>
-      <h2 style={{ textAlign: "center" }}>Approved Customers</h2>
+      <h2 style={{ textAlign: "center", color: "#3b6d3b" }}>
+        Approved Customers
+      </h2>
       {services.length === 0 ? (
         <p style={styles.noServices}>No services found.</p>
       ) : (

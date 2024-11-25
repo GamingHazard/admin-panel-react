@@ -13,7 +13,7 @@ const Dashboard = () => {
         return (
           <div
             style={{
-              backgroundColor: "lightblue",
+              backgroundColor: "#fbfbda",
               padding: 10,
               flex: 1,
               height: 650,
@@ -26,7 +26,7 @@ const Dashboard = () => {
         return (
           <div
             style={{
-              backgroundColor: "whitesmoke",
+              backgroundColor: "#fbfbda",
               padding: 10,
               flex: 1,
               height: 650,
@@ -45,7 +45,7 @@ const Dashboard = () => {
   return (
     <Box sx={{ display: "flex" }}>
       <Sidebar onContentChange={setContent} />
-      <Box sx={{ flex: 1, padding: "16px" }}>{renderContent()}</Box>
+      <Box sx={{ flex: 1 }}>{renderContent()}</Box>
     </Box>
   );
 };

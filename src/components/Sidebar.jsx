@@ -37,12 +37,17 @@ const Sidebar = ({ onContentChange }) => {
     { name: "Settings", icon: <SettingsIcon /> },
   ];
 
+  const name = localStorage.getItem("organization");
+  const formattedName = name
+    ? name.charAt(0).toUpperCase() + name.slice(1)
+    : "";
+
   return (
     <Box
       sx={{
         width: "250px",
         height: "100vh",
-        backgroundColor: "#f4f4f4",
+        backgroundColor: "#3b6d3b",
         display: "flex",
         flexDirection: "column",
         padding: "16px",
@@ -50,7 +55,31 @@ const Sidebar = ({ onContentChange }) => {
       }}
     >
       <div style={{ position: "fixed", width: "250px" }}>
-        <Typography variant="h6" gutterBottom>
+        <Typography
+          variant="h6"
+          color="#fbfbda"
+          textAlign="center"
+          gutterBottom
+          fontWeight="bold"
+          fontSize={26}
+        >
+          {formattedName}
+        </Typography>
+        <Typography
+          variant="h6"
+          color="#fbfbda"
+          textAlign="center"
+          fontWeight="bold"
+        >
+          Admin
+        </Typography>
+        <Typography
+          variant="h6"
+          color="#fbfbda"
+          textAlign="center"
+          gutterBottom
+          fontWeight="bold"
+        >
           Dashboard
         </Typography>
         <List>
@@ -60,20 +89,18 @@ const Sidebar = ({ onContentChange }) => {
               key={name}
               onClick={() => handleButtonClick(name)}
               sx={{
-                backgroundColor:
-                  activeButton === name ? "#1976d2" : "whitesmoke",
-                color: activeButton === name ? "#fff" : "#000",
+                backgroundColor: activeButton === name ? "#fbfbda" : "#3b6d3b",
+                color: activeButton === name ? "#3b6d3b" : "#fbfbda",
                 borderRadius: "4px",
                 marginBottom: "8px",
-                "&:hover": {
-                  backgroundColor:
-                    activeButton === name ? "#1976d2" : "#e0e0e0",
-                },
+                cursor: "pointer",
+                ":hover": { backgroundColor: "#fbfbda", color: "#3b6d3b" },
               }}
             >
               <ListItemIcon
                 sx={{
-                  color: activeButton === name ? "#fff" : "#000",
+                  color: activeButton === name ? "#3b6d3b" : "#fbfbda",
+                  ":hover": { color: "#3b6d3b" },
                 }}
               >
                 {icon}
@@ -82,11 +109,15 @@ const Sidebar = ({ onContentChange }) => {
             </ListItem>
           ))}
           <Button
-            color="error"
             onClick={handleLogout}
             startIcon={<LogoutIcon />}
             sx={{
               marginTop: "16px",
+              color: "#fbfbda",
+              fontWeight: "bold",
+              width: "100%",
+              top: 270,
+              ":hover": { backgroundColor: "#fbfbda", color: "#3b6d3b" },
             }}
           >
             Logout
