@@ -118,12 +118,13 @@ const ServiceCard = ({ service, loadingService, onApprove }) => {
   );
 };
 
-// Main Inbox Component
 const Inbox = () => {
   const [services, setServices] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [loadingService, setLoadingService] = useState(null);
+
+  const organizationName = localStorage.getItem("organization"); // Get admin's organization name
 
   // Fetch services
   const fetchServices = async () => {
@@ -133,9 +134,14 @@ const Inbox = () => {
       );
       const fetchedServices = response.data.services;
 
+      // Filter services by organization name
+      const filteredServices = fetchedServices.filter(
+        (service) => service.organization === organizationName
+      );
+
       const updatedServices = [
         ...new Map(
-          [...fetchedServices, ...services].map((item) => [item.id, item])
+          [...filteredServices, ...services].map((item) => [item.id, item])
         ).values(),
       ];
 
@@ -180,7 +186,10 @@ const Inbox = () => {
   useEffect(() => {
     const savedServices = localStorage.getItem("services");
     if (savedServices) {
-      setServices(JSON.parse(savedServices));
+      const parsedServices = JSON.parse(savedServices).filter(
+        (service) => service.organization === organizationName
+      ); // Filter saved services by organization name
+      setServices(parsedServices);
       setLoading(false);
     }
 

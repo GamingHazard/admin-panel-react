@@ -58,17 +58,14 @@ const styles = {
   },
 };
 
-// ServiceCard Component
 const ServiceCard = ({ service, loadingService, onApprove, remainingTime }) => {
   const isApproved = service.status === "approved";
 
   return (
     <div style={styles.card}>
-      {/* ...same content as before... */}
       <p style={{ textAlign: "right" }}>
         <strong>Remaining Time:</strong> {remainingTime || "Calculating..."}
       </p>
-
       <p>
         <strong>{service.fullName}</strong> is interested in the company
         services and below are the user info:
@@ -122,12 +119,13 @@ const ServiceCard = ({ service, loadingService, onApprove, remainingTime }) => {
   );
 };
 
-// Main Approved Component
 const Approved = () => {
   const [services, setServices] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [loadingService, setLoadingService] = useState(null);
+
+  const adminOrganizationName = localStorage.getItem("organization");
 
   const calculateRemainingTime = (service) => {
     const registrationType = service.registrationType.toLowerCase();
@@ -165,14 +163,14 @@ const Approved = () => {
       );
       const fetchedServices = response.data.services;
 
-      const updatedServices = [
-        ...new Map(
-          [...fetchedServices, ...services].map((item) => [item.id, item])
-        ).values(),
-      ];
+      const filteredServices = fetchedServices.filter(
+        (service) =>
+          service.companyName.toLowerCase() ===
+          adminOrganizationName.toLowerCase()
+      );
 
-      setServices(updatedServices);
-      localStorage.setItem("services", JSON.stringify(updatedServices));
+      setServices(filteredServices);
+      localStorage.setItem("services", JSON.stringify(filteredServices));
       setError("");
     } catch (err) {
       setError(err.response?.data?.message || "Failed to fetch services");
@@ -201,12 +199,6 @@ const Approved = () => {
   };
 
   useEffect(() => {
-    const savedServices = localStorage.getItem("services");
-    if (savedServices) {
-      setServices(JSON.parse(savedServices));
-      setLoading(false);
-    }
-
     fetchServices();
 
     const interval = setInterval(fetchServices, 10000);
@@ -219,10 +211,10 @@ const Approved = () => {
       services.forEach((service) => {
         const remainingTime = calculateRemainingTime(service);
         if (remainingTime === "Expired") {
-          handleDisapprove(service._id);
+          handleDisapprove(service.id);
         }
       });
-    }, 10000); // Check every minute
+    }, 10000);
 
     return () => clearInterval(timer);
   }, [services]);
@@ -253,126 +245,3 @@ const Approved = () => {
 };
 
 export default Approved;
-
-// import React, { useEffect, useState } from "react";
-// import axios from "axios";
-
-// // Utility styles
-
-// // ServiceCard Component
-// const ServiceCard = ({ service, loadingService, onApprove }) => {
-//   const isApproved = service.status === "approved";
-
-//   return (
-//     <div style={styles.card}>
-
-//       <div
-//         style={styles.approveButton(isApproved, loadingService)}
-//         onClick={() => !loadingService && onApprove(service.id)}
-//       >
-//         {loadingService === service._id ? (
-//           <div style={styles.spinner}></div>
-//         ) : (
-//           <p style={{ color: "white", fontSize: 18, fontWeight: "bold" }}>
-//             {isApproved ? "Approved" : "Disapprove"}
-//           </p>
-//         )}
-//       </div>
-//     </div>
-//   );
-// };
-
-// // Main  Approved Component
-// const Approved = () => {
-//   const [services, setServices] = useState([]);
-//   const [loading, setLoading] = useState(true);
-//   const [error, setError] = useState("");
-//   const [loadingService, setLoadingService] = useState(null);
-
-//   // Fetch services
-//   const fetchServices = async () => {
-//     try {
-//       const response = await axios.get(
-//         "https://uga-cycle-backend-1.onrender.com/services/approved"
-//       );
-//       const fetchedServices = response.data.services;
-
-//       const updatedServices = [
-//         ...new Map(
-//           [...fetchedServices, ...services].map((item) => [item.id, item])
-//         ).values(),
-//       ];
-
-//       setServices(updatedServices);
-//       localStorage.setItem("services", JSON.stringify(updatedServices));
-//       setError("");
-//     } catch (err) {
-//       setError(err.response?.data?.message || "Failed to fetch Inboxes");
-//       console.error("Error fetching services:", err);
-//     } finally {
-//       setLoading(false);
-//     }
-//   };
-
-//   // Approve service
-//   const handleDisapprove = async (serviceId) => {
-//     setLoadingService(serviceId);
-//     try {
-//       const response = await axios.put(
-//         `https://uga-cycle-backend-1.onrender.com/services/${serviceId}/disapprove`
-//       );
-//       const updatedService = response.data.service;
-
-//       setServices((prev) =>
-//         prev.map((service) =>
-//           service._id === serviceId
-//             ? { ...service, status: "approved" }
-//             : service
-//         )
-//       );
-
-//       alert("Service approved successfully!");
-//     } catch (err) {
-//       console.error("Error approving service:", err);
-//       alert("Failed to approve service.");
-//     } finally {
-//       setLoadingService(null);
-//     }
-//   };
-
-//   // Initial setup
-//   useEffect(() => {
-//     const savedServices = localStorage.getItem("services");
-//     if (savedServices) {
-//       setServices(JSON.parse(savedServices));
-//       setLoading(false);
-//     }
-
-//     fetchServices();
-
-//     const interval = setInterval(fetchServices, 10000);
-//     return () => clearInterval(interval);
-//   }, []);
-
-//   if (loading) return <div style={styles.loading}>Loading services...</div>;
-//   if (error) return <div style={styles.error}>Error: {error}</div>;
-
-//   return (
-//     <div style={styles.container}>
-//       {services.length === 0 ? (
-//         <p style={styles.noServices}>No services found.</p>
-//       ) : (
-//         services.map((service) => (
-//           <ServiceCard
-//             key={service.id}
-//             service={service}
-//             loadingService={loadingService}
-//             onApprove={handleDisapprove}
-//           />
-//         ))
-//       )}
-//     </div>
-//   );
-// };
-
-// export default Approved;
