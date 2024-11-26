@@ -74,16 +74,34 @@ const Login = () => {
         justifyContent: "center",
         alignItems: "center",
         height: "100vh",
+        backgroundColor: "#fbfbda",
       }}
     >
-      <Grid container spacing={3} direction="column" alignItems="center">
-        <Typography variant="h4">Login</Typography>
+      <Grid container spacing={2} direction="column" alignItems="center">
         {error && <Typography color="error">{error}</Typography>}
-        <form onSubmit={handleSubmit}>
+        <form
+          style={{
+            backgroundColor: "#3b6d3b",
+            padding: 30,
+            textAlign: "center",
+          }}
+          onSubmit={handleSubmit}
+        >
+          <Typography variant="h4" color="#fbfbda">
+            Login
+          </Typography>
           <Grid item>
             <TextField
+              style={{
+                backgroundColor: "#fbfbda",
+                marginTop: 16,
+                color: "#3b6d3b",
+
+                borderRadius: 10,
+              }}
               label="Email or Phone"
               variant="outlined"
+              la
               fullWidth
               value={identifier}
               onChange={(e) => setIdentifier(e.target.value)}
@@ -91,6 +109,14 @@ const Login = () => {
           </Grid>
           <Grid item>
             <TextField
+              style={{
+                backgroundColor: "#fbfbda",
+                marginTop: 16,
+                color: "#3b6d3b",
+
+                borderRadius: 10,
+                marginBottom: 10,
+              }}
               label="Password"
               type="password"
               variant="outlined"

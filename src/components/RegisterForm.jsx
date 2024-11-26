@@ -82,14 +82,30 @@ const Register = () => {
         justifyContent: "center",
         alignItems: "center",
         height: "100vh",
+        backgroundColor: "#fbfbda",
       }}
     >
       <Grid container spacing={3} direction="column" alignItems="center">
         <Typography variant="h4">Register</Typography>
         {error && <Typography color="error">{error}</Typography>}
-        <form onSubmit={handleSubmit}>
+        <form
+          style={{
+            backgroundColor: "#3b6d3b",
+            padding: 30,
+            textAlign: "center",
+          }}
+          onSubmit={handleSubmit}
+        >
           <Grid item>
             <TextField
+              style={{
+                backgroundColor: "#fbfbda",
+                marginTop: 16,
+                color: "#3b6d3b",
+
+                borderRadius: 10,
+                marginBottom: 10,
+              }}
               label="Name"
               variant="outlined"
               fullWidth
@@ -99,6 +115,14 @@ const Register = () => {
           </Grid>
           <Grid item>
             <TextField
+              style={{
+                backgroundColor: "#fbfbda",
+                marginTop: 16,
+                color: "#3b6d3b",
+
+                borderRadius: 10,
+                marginBottom: 10,
+              }}
               label="Organization"
               variant="outlined"
               fullWidth
@@ -108,6 +132,14 @@ const Register = () => {
           </Grid>
           <Grid item>
             <TextField
+              style={{
+                backgroundColor: "#fbfbda",
+                marginTop: 16,
+                color: "#3b6d3b",
+
+                borderRadius: 10,
+                marginBottom: 10,
+              }}
               label="Email"
               type="email"
               variant="outlined"
@@ -118,6 +150,14 @@ const Register = () => {
           </Grid>
           <Grid item>
             <TextField
+              style={{
+                backgroundColor: "#fbfbda",
+                marginTop: 16,
+                color: "#3b6d3b",
+
+                borderRadius: 10,
+                marginBottom: 10,
+              }}
               label="Phone"
               variant="outlined"
               fullWidth
@@ -127,6 +167,14 @@ const Register = () => {
           </Grid>
           <Grid item>
             <TextField
+              style={{
+                backgroundColor: "#fbfbda",
+                marginTop: 16,
+                color: "#3b6d3b",
+
+                borderRadius: 10,
+                marginBottom: 10,
+              }}
               label="Password"
               type="password"
               variant="outlined"
@@ -137,6 +185,14 @@ const Register = () => {
           </Grid>
           <Grid item>
             <TextField
+              style={{
+                backgroundColor: "#fbfbda",
+                marginTop: 16,
+                color: "#3b6d3b",
+
+                borderRadius: 10,
+                marginBottom: 10,
+              }}
               label="Role"
               variant="outlined"
               fullWidth

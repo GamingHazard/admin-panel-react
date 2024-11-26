@@ -31,7 +31,7 @@ const styles = {
     color: "#555",
   },
   card: {
-    width: "100%",
+    width: "90%",
     backgroundColor: "white",
     padding: "15px",
     borderRadius: "10px",
