@@ -6,13 +6,16 @@ import {
   Typography,
   Box,
   CircularProgress,
+  Select,
+  MenuItem,
+  FormControl,
+  InputLabel,
 } from "@mui/material";
 import { useNavigate } from "react-router-dom";
-import { useContext } from "react";
 
 const Register = () => {
   const [name, setName] = useState("");
-  const [organization, setOrganization] = useState("");
+  const [organization, setOrganization] = useState(""); // The organization state will store the selected value
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
   const [password, setPassword] = useState("");
@@ -102,7 +105,6 @@ const Register = () => {
                 backgroundColor: "#fbfbda",
                 marginTop: 16,
                 color: "#3b6d3b",
-
                 borderRadius: 10,
                 marginBottom: 10,
               }}
@@ -113,30 +115,58 @@ const Register = () => {
               onChange={(e) => setName(e.target.value)}
             />
           </Grid>
+
+          {/* Organization dropdown (Select) */}
           <Grid item>
-            <TextField
+            <FormControl
+              fullWidth
               style={{
                 backgroundColor: "#fbfbda",
                 marginTop: 16,
                 color: "#3b6d3b",
-
                 borderRadius: 10,
                 marginBottom: 10,
               }}
-              label="Organization"
-              variant="outlined"
-              fullWidth
-              value={organization}
-              onChange={(e) => setOrganization(e.target.value)}
-            />
+            >
+              <InputLabel id="organization-label">Company</InputLabel>
+              <Select
+                labelId="organization-label"
+                id="organization"
+                value={organization}
+                onChange={(e) => setOrganization(e.target.value)}
+                label="Company"
+              >
+                {/* Replace these MenuItem values with the actual organization options */}
+                <MenuItem value="Asante Waste Management">
+                  Asante Waste Management
+                </MenuItem>
+                <MenuItem value="Bins Kampala">Bins Kampala</MenuItem>
+                <MenuItem value="Armstrong Global Solutions Ltd">
+                  Armstrong Global Solutions Ltd
+                </MenuItem>
+                <MenuItem value="SWIFT Waste Masters LTD">
+                  SWIFT Waste Masters LTD
+                </MenuItem>
+                <MenuItem value="Best of Waste"> Best of Waste</MenuItem>
+                <MenuItem value="Nabugabo Updeal Joint Venture">
+                  Nabugabo Updeal Joint Venture
+                </MenuItem>
+                <MenuItem value="De Waste (U) Ltd"> De Waste (U) Ltd</MenuItem>
+                <MenuItem value="YO WASTE (U) LTD"> YO WASTE (U) LTD</MenuItem>
+                <MenuItem value="Aquila Recycling Plant">
+                  Aquila Recycling Plant
+                </MenuItem>
+                {/* Add more organizations as needed */}
+              </Select>
+            </FormControl>
           </Grid>
+
           <Grid item>
             <TextField
               style={{
                 backgroundColor: "#fbfbda",
                 marginTop: 16,
                 color: "#3b6d3b",
-
                 borderRadius: 10,
                 marginBottom: 10,
               }}
@@ -154,7 +184,6 @@ const Register = () => {
                 backgroundColor: "#fbfbda",
                 marginTop: 16,
                 color: "#3b6d3b",
-
                 borderRadius: 10,
                 marginBottom: 10,
               }}
@@ -171,7 +200,6 @@ const Register = () => {
                 backgroundColor: "#fbfbda",
                 marginTop: 16,
                 color: "#3b6d3b",
-
                 borderRadius: 10,
                 marginBottom: 10,
               }}
@@ -189,7 +217,6 @@ const Register = () => {
                 backgroundColor: "#fbfbda",
                 marginTop: 16,
                 color: "#3b6d3b",
-
                 borderRadius: 10,
                 marginBottom: 10,
               }}
