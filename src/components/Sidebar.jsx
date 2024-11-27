@@ -38,9 +38,6 @@ const Sidebar = ({ onContentChange }) => {
   ];
 
   const name = localStorage.getItem("organization");
-  const formattedName = name
-    ? name.charAt(0).toUpperCase() + name.slice(1)
-    : "";
 
   return (
     <Box
@@ -63,7 +60,7 @@ const Sidebar = ({ onContentChange }) => {
           fontWeight="bold"
           fontSize={26}
         >
-          {formattedName}
+          {name}
         </Typography>
         <Typography
           variant="h6"

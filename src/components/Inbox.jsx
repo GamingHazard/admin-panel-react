@@ -1,6 +1,11 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-
+import {
+  ComposableMap,
+  Geographies,
+  Geography,
+  Marker,
+} from "react-simple-maps";
 // Utility styles
 const styles = {
   container: {
@@ -61,7 +66,7 @@ const styles = {
 
 // ServiceCard Component
 const ServiceCard = ({ service, loadingService, onApprove }) => {
-  const isApproved = service.status === "approved";
+  const isApproved = service.status === "Approved";
 
   return (
     <div style={styles.card}>
@@ -100,7 +105,26 @@ const ServiceCard = ({ service, loadingService, onApprove }) => {
         <strong>Date:</strong> {new Date(service.date).toLocaleString()}
       </p>
       <p>
-        <strong>Location:</strong> {service.location || "Not defined"}
+        <strong>Location:</strong>
+        <span>
+          <ComposableMap width={800} height={400}>
+            <Geographies geography="https://raw.githubusercontent.com/deldersveld/topojson/master/world-countries.json">
+              {({ geographies }) =>
+                geographies.map((geo) => (
+                  <Geography key={geo.rsmKey} geography={geo} />
+                ))
+              }
+            </Geographies>
+            <Marker
+              coordinates={[
+                service.location.longitude,
+                service.location.latitude,
+              ]}
+            >
+              <circle r={5} fill="red" />
+            </Marker>
+          </ComposableMap>
+        </span>
       </p>
       <div
         style={styles.approveButton(isApproved, loadingService)}
@@ -136,7 +160,7 @@ const Inbox = () => {
 
       // Filter services by organization name
       const filteredServices = fetchedServices.filter(
-        (service) => service.organization === organizationName
+        (service) => service.company === organizationName
       );
 
       const updatedServices = [
@@ -160,15 +184,15 @@ const Inbox = () => {
   const handleApprove = async (serviceId) => {
     setLoadingService(serviceId);
     try {
-      const response = await axios.put(
+      await axios.put(
         `https://uga-cycle-backend-1.onrender.com/services/${serviceId}/approve`
       );
-      const updatedService = response.data.service;
+      // const updatedService = response.data.service;
 
       setServices((prev) =>
         prev.map((service) =>
           service._id === serviceId
-            ? { ...service, status: "approved" }
+            ? { ...service, status: "Not Approved" }
             : service
         )
       );
@@ -187,7 +211,7 @@ const Inbox = () => {
     const savedServices = localStorage.getItem("services");
     if (savedServices) {
       const parsedServices = JSON.parse(savedServices).filter(
-        (service) => service.organization === organizationName
+        (service) => service.company === organizationName
       ); // Filter saved services by organization name
       setServices(parsedServices);
       setLoading(false);
@@ -197,7 +221,7 @@ const Inbox = () => {
 
     const interval = setInterval(fetchServices, 10000);
     return () => clearInterval(interval);
-  }, []);
+  }, [fetchServices]);
 
   if (loading) return <div style={styles.loading}>Loading services...</div>;
   if (error) return <div style={styles.error}>Error: {error}</div>;
