@@ -28,6 +28,7 @@ import {
   Save as SaveIcon,
   Cancel as CancelIcon,
 } from "@mui/icons-material";
+import Inbox from "../components/Inbox";
 
 const mockHomes = [
   {
@@ -129,172 +130,23 @@ const Home = () => {
 
   return (
     <Container>
-      <Container style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', marginTop: 32 }}>
-        <Typography variant="h4" gutterBottom style={{ borderBottom: '2px solid #4caf50', paddingBottom: '8px' }}>
-          Home Media
+      <Container
+        style={{
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          marginTop: 32,
+        }}
+      >
+        <Typography
+          variant="h4"
+          gutterBottom
+          style={{ borderBottom: "2px solid #4caf50", paddingBottom: "8px" }}
+        >
+          Inbox
         </Typography>
       </Container>
-      <IconButton color="primary" onClick={handleAddClick}>
-        <AddIcon />
-      </IconButton>
-      <Typography variant="caption" style={{ verticalAlign: 'super' }}>Add Media</Typography>
-      {homes.length === 0 ? (
-        <Typography variant="h6" color="textSecondary" style={{ marginTop: 16 }}>
-          No media found. Please add a new media.
-        </Typography>
-      ) : (
-        <Grid container spacing={3} style={{ marginTop: 16 }}>
-          {homes.map((home) => (
-            <Grid item xs={12} key={home.id}>
-              <Card style={{ padding: 16 }}>
-                <CardHeader
-                  avatar={<Avatar>{home.title[0]}</Avatar>}
-                  title={home.title}
-                  subheader={home.subtitle}
-                />
-                <CardContent>
-                  <Typography>{home.description}</Typography>
-                  {home.mediaType === "image" && home.mediaUrls.map((url, index) => (
-                    <CardMedia
-                      key={index}
-                      component="img"
-                      image={url}
-                      alt={home.title}
-                      style={{ marginTop: 16 }}
-                    />
-                  ))}
-                  {home.mediaType === "video" && home.mediaUrls.map((url, index) => (
-                    <CardMedia
-                      key={index}
-                      component="video"
-                      controls
-                      src={url}
-                      alt={home.title}
-                      style={{ marginTop: 16 }}
-                    />
-                  ))}
-                  {home.mediaType === "audio" && home.mediaUrls.map((url, index) => (
-                    <CardMedia
-                      key={index}
-                      component="audio"
-                      controls
-                      src={url}
-                      alt={home.title}
-                      style={{ marginTop: 16 }}
-                    />
-                  ))}
-                  <div style={{ marginTop: 16 }}>
-                    <IconButton
-                      color="primary"
-                      onClick={() => handleEditClick(home)}
-                    >
-                      <EditIcon />
-                    </IconButton>
-                    <Typography variant="caption">Edit</Typography>
-                    <IconButton
-                      color="secondary"
-                      onClick={() => handleDeleteClick(home.id)}
-                    >
-                      <DeleteIcon />
-                    </IconButton>
-                    <Typography variant="caption">Delete</Typography>
-                  </div>
-                </CardContent>
-              </Card>
-            </Grid>
-          ))}
-        </Grid>
-      )}
-      <Dialog open={open} onClose={handleCancelClick}>
-        <DialogTitle>
-          {isEdit ? "Edit Media" : "Add Media"}
-        </DialogTitle>
-        <DialogContent>
-          <DialogContentText>
-            {isEdit
-              ? "Update the details of the media."
-              : "Enter the details of the new media."}
-          </DialogContentText>
-          <TextField
-            autoFocus
-            margin="dense"
-            name="title"
-            label="Title"
-            fullWidth
-            value={currentHome.title}
-            onChange={handleInputChange}
-          />
-          <TextField
-            margin="dense"
-            name="subtitle"
-            label="Subtitle"
-            fullWidth
-            value={currentHome.subtitle}
-            onChange={handleInputChange}
-          />
-          <FormControl fullWidth margin="dense">
-            <InputLabel>Media Type</InputLabel>
-            <Select
-              name="mediaType"
-              value={currentHome.mediaType}
-              onChange={handleInputChange}
-            >
-              <MenuItem value="image">Image</MenuItem>
-              <MenuItem value="video">Video</MenuItem>
-              <MenuItem value="audio">Audio</MenuItem>
-            </Select>
-          </FormControl>
-          <input
-            accept={currentHome.mediaType + "/*"}
-            id="file-input"
-            type="file"
-            multiple
-            onChange={handleFileChange}
-            style={{ marginTop: 16 }}
-          />
-          <label htmlFor="file-input">
-            <Typography variant="caption">Upload {currentHome.mediaType.charAt(0).toUpperCase() + currentHome.mediaType.slice(1)} Files</Typography>
-          </label>
-          <TextField
-            margin="dense"
-            name="description"
-            label="Description"
-            fullWidth
-            multiline
-            rows={4}
-            value={currentHome.description}
-            onChange={handleInputChange}
-          />
-          <TextField
-            margin="dense"
-            name="createdAt"
-            label="Created At"
-            type="date"
-            fullWidth
-            InputLabelProps={{
-              shrink: true,
-            }}
-            value={currentHome.createdAt ? currentHome.createdAt.split('T')[0] : ''}
-            onChange={handleInputChange}
-          />
-        </DialogContent>
-        <DialogActions>
-          <Button
-            onClick={handleCancelClick}
-            startIcon={<CancelIcon style={{ color: '#f44336' }} />}
-            color="secondary"
-          >
-            Cancel
-          </Button>
-          <Button
-            onClick={handleSaveClick}
-            startIcon={<SaveIcon style={{ color: '#4caf50' }} />}
-            color="primary"
-          >
-            Save
-          </Button>
-        </DialogActions>
-      </Dialog>
+      <Inbox />
     </Container>
   );
 };

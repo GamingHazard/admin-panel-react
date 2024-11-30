@@ -72,7 +72,6 @@ const Register = () => {
         localStorage.setItem("email", userData.email);
         localStorage.setItem("phone", userData.phone);
 
-        setUser(userData);
         register(data.token);
         navigate("/home");
       } else {

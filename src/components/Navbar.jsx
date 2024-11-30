@@ -2,12 +2,11 @@ import React from "react";
 import { AppBar, Toolbar, Typography, Button, IconButton } from "@mui/material";
 import { Link as RouterLink, useNavigate } from "react-router-dom";
 import DashboardIcon from "@mui/icons-material/Dashboard";
-import BookIcon from "@mui/icons-material/Book";
 import BusinessIcon from "@mui/icons-material/Business";
-import HomeIcon from "@mui/icons-material/Home";
 import PeopleIcon from "@mui/icons-material/People";
 import BuildIcon from "@mui/icons-material/Build";
 import PersonIcon from "@mui/icons-material/Person";
+import { Mail, Settings, CheckCircleOutline } from "@mui/icons-material";
 import ExitToAppIcon from "@mui/icons-material/ExitToApp";
 import { useAuth } from "../context/AuthContext";
 
@@ -21,7 +20,10 @@ const Navbar = () => {
   };
 
   return (
-    <AppBar position="static" style={{ background: "#f5f5f5", color: "#000" }}>
+    <AppBar
+      position="static"
+      style={{ background: "#3b6d3b", color: "#fbfbda" }}
+    >
       <Toolbar>
         <IconButton
           edge="start"
@@ -30,9 +32,9 @@ const Navbar = () => {
           component={RouterLink}
           to="/dashboard"
         >
-          <DashboardIcon style={{ fontSize: 40, color: "#1976d2" }} />
+          <DashboardIcon style={{ fontSize: 40, color: "#fbfbda" }} />
         </IconButton>
-        <Typography variant="h6" style={{ flexGrow: 1 }}>
+        <Typography variant="h6" style={{ flexGrow: 1, fontWeight: "bold" }}>
           {organization}
         </Typography>
         {isAuthenticated && (
@@ -41,52 +43,38 @@ const Navbar = () => {
               color="inherit"
               component={RouterLink}
               to="/home"
-              startIcon={<HomeIcon style={{ color: "#4caf50" }} />}
+              startIcon={<Mail style={{ color: "#fbfbda" }} />}
             >
-              Home
+              Inbox
             </Button>
             <Button
               color="inherit"
               component={RouterLink}
               to="/publications"
-              startIcon={<BookIcon style={{ color: "#ff9800" }} />}
+              startIcon={<CheckCircleOutline style={{ color: "#fbfbda" }} />}
             >
-              Publications
+              Approved
             </Button>
             <Button
               color="inherit"
               component={RouterLink}
               to="/business"
-              startIcon={<BusinessIcon style={{ color: "#9c27b0" }} />}
+              startIcon={<PeopleIcon style={{ color: "#fbfbda" }} />}
             >
-              Business
+              All Customers
             </Button>
             <Button
               color="inherit"
               component={RouterLink}
               to="/users"
-              startIcon={<PeopleIcon style={{ color: "#f44336" }} />}
+              startIcon={<Settings style={{ color: "#fbfbda" }} />}
             >
-              Users
+              Settings
             </Button>
-            <Button
-              color="inherit"
-              component={RouterLink}
-              to="/services"
-              startIcon={<BuildIcon style={{ color: "#00bcd4" }} />}
-            >
-              Services
-            </Button>
-            <Button
-              color="inherit"
-              component={RouterLink}
-              to="/authors"
-              startIcon={<PersonIcon style={{ color: "#ff5722" }} />}
-            >
-              Authors
-            </Button>
+
             <IconButton color="inherit" onClick={handleLogout}>
-              <ExitToAppIcon style={{ color: "#000" }} />
+              <ExitToAppIcon style={{ color: "#fbfbda" }} />
+              Logout
             </IconButton>
           </>
         )}
