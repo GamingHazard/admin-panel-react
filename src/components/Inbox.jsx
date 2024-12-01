@@ -2,9 +2,10 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { Map, Marker, ZoomControl, Overlay } from "pigeon-maps";
 import { osm } from "pigeon-maps/providers";
+import { CircularProgress } from "@mui/material";
 
 const ServiceCard = ({ service, loadingService, onApprove }) => {
-  const isApproved = service.status === "Approved";
+  const isApproved = service.status === "Not Approved";
 
   // Extract coordinates (latitude and longitude) from the service object
   const { latitude, longitude } = service.location;
@@ -66,20 +67,22 @@ const ServiceCard = ({ service, loadingService, onApprove }) => {
           <Overlay anchor={[latitude, longitude]} offset={[120, 79]}>
             <img
               style={styles.profileImage}
-              src="https://cdn-icons-png.flaticon.com/128/149/149071.png"
-              alt="alt"
+              src={
+                service?.user?.profilePicture ||
+                "https://cdn-icons-png.flaticon.com/128/149/149071.png"
+              } // Use a fallback image if profilePicture is not available
+              alt={service.name || "User"}
             />
           </Overlay>
         </Marker>
         <ZoomControl />
       </Map>
-
       <div
         style={styles.approveButton(isApproved, loadingService)}
         onClick={() => !loadingService && onApprove(service.id)}
       >
         {loadingService === service._id ? (
-          <div style={styles.spinner}></div>
+          <CircularProgress size={24} color="inherit" />
         ) : (
           <p style={{ color: "white", fontSize: 18, fontWeight: "bold" }}>
             {isApproved ? "Approved" : "Approve"}
@@ -92,13 +95,14 @@ const ServiceCard = ({ service, loadingService, onApprove }) => {
 
 const Inbox = () => {
   const [services, setServices] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [loadingService, setLoadingService] = useState(null);
 
   const organizationName = sessionStorage.getItem("organization"); // Get admin's organization name from sessionStorage
 
   const fetchServices = async () => {
+    setLoading(true); // Show loading spinner
     try {
       const response = await axios.get(
         "https://uga-cycle-backend-1.onrender.com/services/not-approved"
@@ -113,7 +117,6 @@ const Inbox = () => {
       // Combine services and filteredServices, ensuring unique services by id
       const combinedServices = [...filteredServices, ...services];
       const uniqueServices = combinedServices.reduce((acc, current) => {
-        // If the service id is already in the accumulator, we don't add it again
         if (!acc.some((service) => service.id === current.id)) {
           acc.push(current);
         }
@@ -123,12 +126,12 @@ const Inbox = () => {
       // Update the services state
       setServices(uniqueServices);
       sessionStorage.setItem("services", JSON.stringify(uniqueServices)); // Save to sessionStorage
-      setError("");
+      setError(""); // Clear error on successful fetch
     } catch (err) {
       setError(err.response?.data?.message || "Failed to fetch Inboxes");
       console.error("Error fetching services:", err);
     } finally {
-      setLoading(false);
+      setLoading(false); // Hide loading spinner
     }
   };
 
@@ -157,7 +160,6 @@ const Inbox = () => {
     }
   };
 
-  // Initial setup
   useEffect(() => {
     const savedServices = sessionStorage.getItem("services");
     if (savedServices) {
@@ -170,9 +172,12 @@ const Inbox = () => {
 
     fetchServices();
 
+    // Set an interval to fetch services every 10 seconds
     const interval = setInterval(fetchServices, 10000);
+
+    // Cleanup the interval on unmount
     return () => clearInterval(interval);
-  }, [fetchServices]);
+  }, []); // Empty dependency array to run only on mount
 
   if (loading) return <div style={styles.loading}>Loading services...</div>;
   if (error) return <div style={styles.error}>Error: {error}</div>;
@@ -243,7 +248,7 @@ const styles = {
     textAlign: "center",
     alignSelf: "center",
     padding: 15,
-    backgroundColor: isApproved ? "green" : "#1976d2",
+    backgroundColor: isApproved ? "green" : "teal",
     borderRadius: "10px",
     cursor: loading ? "not-allowed" : "pointer",
     display: "flex",

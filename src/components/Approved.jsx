@@ -2,19 +2,19 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { Map, Marker, ZoomControl, Overlay } from "pigeon-maps";
 import { osm } from "pigeon-maps/providers";
+import { CircularProgress } from "@mui/material";
 
-const ServiceCard = ({ service, loadingService, onApprove, remainingTime }) => {
-  const isApproved = service.status === "Approved";
+const ServiceCard = ({ service, loadingService, onApprove }) => {
+  const isApproved = service.status === "Not Approved";
+
   // Extract coordinates (latitude and longitude) from the service object
   const { latitude, longitude } = service.location;
 
   const [center, setCenter] = useState([latitude, longitude]);
   const [zoom, setZoom] = useState(11);
+
   return (
     <div style={styles.card}>
-      <p style={{ textAlign: "right" }}>
-        <strong>Remaining Time:</strong> {remainingTime || "Calculating..."}
-      </p>
       <p>
         <strong>{service.fullName}</strong> is interested in the company
         services and below are the user info:
@@ -52,6 +52,7 @@ const ServiceCard = ({ service, loadingService, onApprove, remainingTime }) => {
       <p>
         <strong>Location:</strong> Latitude: {latitude}, Longitude: {longitude}
       </p>
+
       <Map
         height={300}
         provider={osm}
@@ -66,20 +67,22 @@ const ServiceCard = ({ service, loadingService, onApprove, remainingTime }) => {
           <Overlay anchor={[latitude, longitude]} offset={[120, 79]}>
             <img
               style={styles.profileImage}
-              src="https://cdn-icons-png.flaticon.com/128/149/149071.png"
-              alt="alt"
+              src={
+                service?.user?.profilePicture ||
+                "https://cdn-icons-png.flaticon.com/128/149/149071.png"
+              } // Use a fallback image if profilePicture is not available
+              alt={service.name || "User"}
             />
           </Overlay>
         </Marker>
         <ZoomControl />
       </Map>
-
       <div
         style={styles.approveButton(isApproved, loadingService)}
         onClick={() => !loadingService && onApprove(service.id)}
       >
         {loadingService === service._id ? (
-          <div style={styles.spinner}></div>
+          <CircularProgress size={24} color="inherit" />
         ) : (
           <p style={{ color: "white", fontSize: 18, fontWeight: "bold" }}>
             {isApproved ? "Approved" : "Disapprove"}
@@ -92,66 +95,48 @@ const ServiceCard = ({ service, loadingService, onApprove, remainingTime }) => {
 
 const Approved = () => {
   const [services, setServices] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [loadingService, setLoadingService] = useState(null);
 
-  const adminOrganizationName = localStorage.getItem("organization");
-
-  const calculateRemainingTime = (service) => {
-    const registrationType = service.registrationType.toLowerCase();
-    const now = new Date();
-    const postDate = new Date(service.date);
-
-    let expirationDate;
-
-    if (registrationType === "monthly") {
-      expirationDate = new Date(postDate.setMonth(postDate.getMonth() + 1));
-    } else if (registrationType === "mid-yearly") {
-      expirationDate = new Date(postDate.setMonth(postDate.getMonth() + 6));
-    } else if (registrationType === "annual") {
-      expirationDate = new Date(
-        postDate.setFullYear(postDate.getFullYear() + 1)
-      );
-    } else {
-      return null;
-    }
-
-    const remainingTime = expirationDate - now;
-    if (remainingTime <= 0) return "Expired";
-
-    const days = Math.floor(remainingTime / (1000 * 60 * 60 * 24));
-    const hours = Math.floor((remainingTime / (1000 * 60 * 60)) % 24);
-    const minutes = Math.floor((remainingTime / (1000 * 60)) % 60);
-
-    return `${days}d ${hours}h ${minutes}m`;
-  };
+  const organizationName = sessionStorage.getItem("organization"); // Get admin's organization name from sessionStorage
 
   const fetchServices = async () => {
+    setLoading(true); // Show loading spinner
     try {
       const response = await axios.get(
         "https://uga-cycle-backend-1.onrender.com/services/approved"
       );
       const fetchedServices = response.data.services;
 
+      // Filter services by organization name
       const filteredServices = fetchedServices.filter(
-        (service) =>
-          service.companyName.toLowerCase() ===
-          adminOrganizationName.toLowerCase()
+        (service) => service.company === organizationName
       );
 
-      setServices(filteredServices);
-      localStorage.setItem("services", JSON.stringify(filteredServices));
-      setError("");
+      // Combine services and filteredServices, ensuring unique services by id
+      const combinedServices = [...filteredServices, ...services];
+      const uniqueServices = combinedServices.reduce((acc, current) => {
+        if (!acc.some((service) => service.id === current.id)) {
+          acc.push(current);
+        }
+        return acc;
+      }, []);
+
+      // Update the services state
+      setServices(uniqueServices);
+      sessionStorage.setItem("services", JSON.stringify(uniqueServices)); // Save to sessionStorage
+      setError(""); // Clear error on successful fetch
     } catch (err) {
-      setError(err.response?.data?.message || "Failed to fetch services");
+      setError(err.response?.data?.message || "Failed to fetch Inboxes");
       console.error("Error fetching services:", err);
     } finally {
-      setLoading(false);
+      setLoading(false); // Hide loading spinner
     }
   };
 
-  const handleDisapprove = async (serviceId) => {
+  // Approve service
+  const handleApprove = async (serviceId) => {
     setLoadingService(serviceId);
     try {
       await axios.put(
@@ -159,45 +144,47 @@ const Approved = () => {
       );
 
       setServices((prev) =>
-        prev.filter((service) => service._id !== serviceId)
+        prev.map((service) =>
+          service._id === serviceId
+            ? { ...service, status: "Not Approved" }
+            : service
+        )
       );
-      alert("Service disapproved automatically!");
+
+      alert("Service approved successfully!");
     } catch (err) {
-      console.error("Error disapproving service:", err);
+      console.error("Error approving service:", err);
+      alert("Failed to approve service.");
     } finally {
       setLoadingService(null);
     }
   };
 
   useEffect(() => {
+    const savedServices = sessionStorage.getItem("services");
+    if (savedServices) {
+      const parsedServices = JSON.parse(savedServices).filter(
+        (service) => service.company === organizationName
+      ); // Filter saved services by organization name
+      setServices(parsedServices);
+      setLoading(false);
+    }
+
     fetchServices();
 
+    // Set an interval to fetch services every 10 seconds
     const interval = setInterval(fetchServices, 10000);
 
+    // Cleanup the interval on unmount
     return () => clearInterval(interval);
-  }, []);
-
-  useEffect(() => {
-    const timer = setInterval(() => {
-      services.forEach((service) => {
-        const remainingTime = calculateRemainingTime(service);
-        if (remainingTime === "Expired") {
-          handleDisapprove(service.id);
-        }
-      });
-    }, 10000);
-
-    return () => clearInterval(timer);
-  }, [services]);
+  }, []); // Empty dependency array to run only on mount
 
   if (loading) return <div style={styles.loading}>Loading services...</div>;
   if (error) return <div style={styles.error}>Error: {error}</div>;
 
   return (
     <div style={styles.container}>
-      <h2 style={{ textAlign: "center", color: "#3b6d3b" }}>
-        Approved Customers
-      </h2>
+      <h2 style={{ textAlign: "center", color: "#3b6d3b" }}>Inbox</h2>
       {services.length === 0 ? (
         <p style={styles.noServices}>No services found.</p>
       ) : (
@@ -206,8 +193,7 @@ const Approved = () => {
             key={service.id}
             service={service}
             loadingService={loadingService}
-            onApprove={handleDisapprove}
-            remainingTime={calculateRemainingTime(service)}
+            onApprove={handleApprove}
           />
         ))
       )}
@@ -215,11 +201,17 @@ const Approved = () => {
   );
 };
 
-export default Approved;
+// Utility styles
 const styles = {
+  profileImage: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    marginRight: 10,
+  },
   container: {
     fontFamily: "Arial, sans-serif",
-    backgroundColor: "#fbfbda",
+    backgroundColor: "whitesmoke",
     flex: 1,
     padding: "20px",
   },
@@ -272,3 +264,5 @@ const styles = {
     animation: "spin 1s linear infinite",
   },
 };
+
+export default Approved;
