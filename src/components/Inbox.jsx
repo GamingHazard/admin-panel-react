@@ -96,9 +96,8 @@ const Inbox = () => {
   const [error, setError] = useState("");
   const [loadingService, setLoadingService] = useState(null);
 
-  const organizationName = localStorage.getItem("organization"); // Get admin's organization name
+  const organizationName = sessionStorage.getItem("organization"); // Get admin's organization name from sessionStorage
 
-  // Fetch services
   const fetchServices = async () => {
     try {
       const response = await axios.get(
@@ -111,14 +110,19 @@ const Inbox = () => {
         (service) => service.company === organizationName
       );
 
-      const updatedServices = [
-        ...new Map(
-          [...filteredServices, ...services].map((item) => [item.id, item])
-        ).values(),
-      ];
+      // Combine services and filteredServices, ensuring unique services by id
+      const combinedServices = [...filteredServices, ...services];
+      const uniqueServices = combinedServices.reduce((acc, current) => {
+        // If the service id is already in the accumulator, we don't add it again
+        if (!acc.some((service) => service.id === current.id)) {
+          acc.push(current);
+        }
+        return acc;
+      }, []);
 
-      setServices(updatedServices);
-      localStorage.setItem("services", JSON.stringify(updatedServices));
+      // Update the services state
+      setServices(uniqueServices);
+      sessionStorage.setItem("services", JSON.stringify(uniqueServices)); // Save to sessionStorage
       setError("");
     } catch (err) {
       setError(err.response?.data?.message || "Failed to fetch Inboxes");
@@ -135,7 +139,6 @@ const Inbox = () => {
       await axios.put(
         `https://uga-cycle-backend-1.onrender.com/services/${serviceId}/approve`
       );
-      // const updatedService = response.data.service;
 
       setServices((prev) =>
         prev.map((service) =>
@@ -156,7 +159,7 @@ const Inbox = () => {
 
   // Initial setup
   useEffect(() => {
-    const savedServices = localStorage.getItem("services");
+    const savedServices = sessionStorage.getItem("services");
     if (savedServices) {
       const parsedServices = JSON.parse(savedServices).filter(
         (service) => service.company === organizationName
@@ -192,6 +195,7 @@ const Inbox = () => {
     </div>
   );
 };
+
 // Utility styles
 const styles = {
   profileImage: {

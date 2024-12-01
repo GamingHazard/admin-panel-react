@@ -55,13 +55,15 @@ const LandingPage = () => {
 
       if (response.ok) {
         const userData = data.user;
-        localStorage.setItem("userId", userData.id);
-        localStorage.setItem("token", data.token);
-        localStorage.setItem("role", userData.role);
-        localStorage.setItem("name", userData.name);
-        localStorage.setItem("organization", userData.organization);
-        localStorage.setItem("email", userData.email);
-        localStorage.setItem("phone", userData.phone);
+
+        // Replace localStorage with sessionStorage
+        sessionStorage.setItem("userId", userData.id);
+        sessionStorage.setItem("token", data.token);
+        sessionStorage.setItem("role", userData.role);
+        sessionStorage.setItem("name", userData.name);
+        sessionStorage.setItem("organization", userData.organization);
+        sessionStorage.setItem("email", userData.email);
+        sessionStorage.setItem("phone", userData.phone);
 
         login(data.token);
         navigate("/home");

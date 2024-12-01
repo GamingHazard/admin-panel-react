@@ -1,26 +1,5 @@
 import React, { useState, useEffect } from "react";
-import {
-  Container,
-  Typography,
-  TextField,
-  Button,
-  Card,
-  CardHeader,
-  CardContent,
-  CardMedia,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogContentText,
-  DialogTitle,
-  MenuItem,
-  Select,
-  InputLabel,
-  FormControl,
-  Grid,
-  IconButton,
-  Avatar,
-} from "@mui/material";
+import { Container, Typography, IconButton } from "@mui/material";
 import {
   Add as AddIcon,
   Edit as EditIcon,
@@ -129,13 +108,19 @@ const Home = () => {
   };
 
   return (
-    <Container>
+    <Container
+      style={{
+        flex: 1,
+        backgroundColor: "lightblue",
+      }}
+    >
       <Container
         style={{
           display: "flex",
           justifyContent: "center",
           alignItems: "center",
           marginTop: 32,
+          backgroundColor: "lightblue",
         }}
       >
         <Typography
@@ -146,6 +131,7 @@ const Home = () => {
           Inbox
         </Typography>
       </Container>
+
       <Inbox />
     </Container>
   );

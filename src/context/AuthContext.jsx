@@ -3,26 +3,27 @@ import React, { createContext, useState, useContext, useEffect } from "react";
 const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
+  // Check if the token exists in sessionStorage to set the initial authentication state
   const [isAuthenticated, setIsAuthenticated] = useState(
-    !!localStorage.getItem("token")
+    !!sessionStorage.getItem("token")
   );
-  const [token, setToken] = useState(localStorage.getItem("token") || "");
+  const [token, setToken] = useState(sessionStorage.getItem("token") || "");
 
   const login = (token) => {
     setIsAuthenticated(true);
     setToken(token);
-    localStorage.setItem("token", token);
+    sessionStorage.setItem("token", token); // Store token in sessionStorage
   };
   const register = (token) => {
     setIsAuthenticated(true);
     setToken(token);
-    localStorage.setItem("token", token);
+    sessionStorage.setItem("token", token); // Store token in sessionStorage
   };
 
   const logout = () => {
     setIsAuthenticated(false);
     setToken("");
-    localStorage.removeItem("token");
+    sessionStorage.removeItem("token"); // Remove token from sessionStorage
   };
 
   return (

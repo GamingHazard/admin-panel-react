@@ -1,66 +1,15 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-
-const styles = {
-  container: {
-    fontFamily: "Arial, sans-serif",
-    backgroundColor: "#fbfbda",
-    flex: 1,
-    padding: "20px",
-  },
-  heading: {
-    textAlign: "center",
-    fontSize: "2rem",
-    color: "#333",
-    marginBottom: "20px",
-  },
-  loading: {
-    textAlign: "center",
-    color: "#007bff",
-    fontSize: "1.5rem",
-  },
-  error: {
-    textAlign: "center",
-    color: "red",
-    fontSize: "1.2rem",
-  },
-  noServices: {
-    textAlign: "center",
-    fontSize: "1rem",
-    color: "#555",
-  },
-  card: {
-    width: "90%",
-    backgroundColor: "white",
-    padding: "15px",
-    borderRadius: "10px",
-    marginBottom: "15px",
-    boxShadow: "0 2px 5px rgba(0, 0, 0, 0.1)",
-  },
-  approveButton: (isApproved, loading) => ({
-    textAlign: "center",
-    alignSelf: "center",
-    padding: 15,
-    backgroundColor: isApproved ? "green" : "crimson",
-    borderRadius: "10px",
-    cursor: loading ? "not-allowed" : "pointer",
-    display: "flex",
-    justifyContent: "center",
-    alignItems: "center",
-  }),
-  spinner: {
-    width: 20,
-    height: 20,
-    border: "3px solid white",
-    borderTop: "3px solid #1976d2",
-    borderRadius: "50%",
-    animation: "spin 1s linear infinite",
-  },
-};
+import { Map, Marker, ZoomControl, Overlay } from "pigeon-maps";
+import { osm } from "pigeon-maps/providers";
 
 const ServiceCard = ({ service, loadingService, onApprove, remainingTime }) => {
-  const isApproved = service.status === "approved";
+  const isApproved = service.status === "Approved";
+  // Extract coordinates (latitude and longitude) from the service object
+  const { latitude, longitude } = service.location;
 
+  const [center, setCenter] = useState([latitude, longitude]);
+  const [zoom, setZoom] = useState(11);
   return (
     <div style={styles.card}>
       <p style={{ textAlign: "right" }}>
@@ -101,8 +50,30 @@ const ServiceCard = ({ service, loadingService, onApprove, remainingTime }) => {
         <strong>Date:</strong> {new Date(service.date).toLocaleString()}
       </p>
       <p>
-        <strong>Location:</strong> {service.location || "Not defined"}
+        <strong>Location:</strong> Latitude: {latitude}, Longitude: {longitude}
       </p>
+      <Map
+        height={300}
+        provider={osm}
+        center={center}
+        zoom={zoom}
+        onBoundsChanged={({ center, zoom }) => {
+          setCenter(center);
+          setZoom(zoom);
+        }}
+      >
+        <Marker width={50} anchor={[latitude, longitude]}>
+          <Overlay anchor={[latitude, longitude]} offset={[120, 79]}>
+            <img
+              style={styles.profileImage}
+              src="https://cdn-icons-png.flaticon.com/128/149/149071.png"
+              alt="alt"
+            />
+          </Overlay>
+        </Marker>
+        <ZoomControl />
+      </Map>
+
       <div
         style={styles.approveButton(isApproved, loadingService)}
         onClick={() => !loadingService && onApprove(service.id)}
@@ -245,3 +216,59 @@ const Approved = () => {
 };
 
 export default Approved;
+const styles = {
+  container: {
+    fontFamily: "Arial, sans-serif",
+    backgroundColor: "#fbfbda",
+    flex: 1,
+    padding: "20px",
+  },
+  heading: {
+    textAlign: "center",
+    fontSize: "2rem",
+    color: "#333",
+    marginBottom: "20px",
+  },
+  loading: {
+    textAlign: "center",
+    color: "#007bff",
+    fontSize: "1.5rem",
+  },
+  error: {
+    textAlign: "center",
+    color: "red",
+    fontSize: "1.2rem",
+  },
+  noServices: {
+    textAlign: "center",
+    fontSize: "1rem",
+    color: "#555",
+  },
+  card: {
+    width: "90%",
+    backgroundColor: "white",
+    padding: "15px",
+    borderRadius: "10px",
+    marginBottom: "15px",
+    boxShadow: "0 2px 5px rgba(0, 0, 0, 0.1)",
+  },
+  approveButton: (isApproved, loading) => ({
+    textAlign: "center",
+    alignSelf: "center",
+    padding: 15,
+    backgroundColor: isApproved ? "green" : "crimson",
+    borderRadius: "10px",
+    cursor: loading ? "not-allowed" : "pointer",
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+  }),
+  spinner: {
+    width: 20,
+    height: 20,
+    border: "3px solid white",
+    borderTop: "3px solid #1976d2",
+    borderRadius: "50%",
+    animation: "spin 1s linear infinite",
+  },
+};
