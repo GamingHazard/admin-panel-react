@@ -119,7 +119,6 @@ const Home = () => {
           display: "flex",
           justifyContent: "center",
           alignItems: "center",
-          marginTop: 32,
           backgroundColor: "lightblue",
           marginTop: "30px",
         }}
