@@ -38,7 +38,7 @@ const AllCustomers = () => {
         setCenter([averageLat, averageLng]);
       }
     } catch (err) {
-      setError("Failed to fetch approved services.");
+      setError("No approved services.");
       console.error("Error fetching approved services:", err);
     } finally {
       setLoading(false);
@@ -46,16 +46,15 @@ const AllCustomers = () => {
   };
 
   useEffect(() => {
+    // Initial fetch when component mounts
     fetchApprovedServices();
-  }, []); // Run once on mount
 
-  if (loading) {
-    return (
-      <div style={styles.loading}>
-        <CircularProgress size={50} />
-      </div>
-    );
-  }
+    // Set interval to fetch data every 10 seconds
+    const intervalId = setInterval(fetchApprovedServices, 3000);
+
+    // Cleanup the interval when the component unmounts
+    return () => clearInterval(intervalId);
+  }, []); // Run only once on mount
 
   if (error) {
     return <div style={styles.error}>{error}</div>;
@@ -63,7 +62,6 @@ const AllCustomers = () => {
 
   return (
     <div style={styles.container}>
-      {/* <h2 style={styles.heading}>Approved Services on Map</h2> */}
       <Map height={500} provider={osm} center={center} zoom={zoom}>
         {services.map((service) => (
           <Marker
@@ -89,6 +87,7 @@ const styles = {
     backgroundColor: "whitesmoke",
     padding: "20px",
     textAlign: "center",
+    top: -20,
   },
   heading: {
     fontSize: "2rem",

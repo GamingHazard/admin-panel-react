@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { Map, Marker, ZoomControl, Overlay } from "pigeon-maps";
 import { osm } from "pigeon-maps/providers";
-import { CircularProgress } from "@mui/material";
+import { CircularProgress, Typography } from "@mui/material";
 
 const ServiceCard = ({ service, loadingService, onApprove }) => {
   const isApproved = service.status === "Not Approved";
@@ -15,6 +15,13 @@ const ServiceCard = ({ service, loadingService, onApprove }) => {
 
   return (
     <div style={styles.card}>
+      <Typography
+        variant="h4"
+        gutterBottom
+        style={{ borderBottom: "2px solid #4caf50", paddingBottom: "8px" }}
+      >
+        Approved
+      </Typography>
       <p>
         <strong>{service.fullName}</strong> is interested in the company
         services and below are the user info:
@@ -63,18 +70,11 @@ const ServiceCard = ({ service, loadingService, onApprove }) => {
           setZoom(zoom);
         }}
       >
-        <Marker width={50} anchor={[latitude, longitude]}>
-          <Overlay anchor={[latitude, longitude]} offset={[120, 79]}>
-            <img
-              style={styles.profileImage}
-              src={
-                service?.user?.profilePicture ||
-                "https://cdn-icons-png.flaticon.com/128/149/149071.png"
-              } // Use a fallback image if profilePicture is not available
-              alt={service.name || "User"}
-            />
-          </Overlay>
-        </Marker>
+        <Marker
+          width={50}
+          color={"teal"}
+          anchor={[latitude, longitude]}
+        ></Marker>
         <ZoomControl />
       </Map>
       <div
@@ -82,7 +82,7 @@ const ServiceCard = ({ service, loadingService, onApprove }) => {
         onClick={() => !loadingService && onApprove(service.id)}
       >
         {loadingService === service._id ? (
-          <CircularProgress size={24} color="inherit" />
+          <CircularProgress size={24} color="warning" />
         ) : (
           <p style={{ color: "white", fontSize: 18, fontWeight: "bold" }}>
             {isApproved ? "Approved" : "Disapprove"}
@@ -125,7 +125,6 @@ const Approved = () => {
 
       // Update the services state
       setServices(uniqueServices);
-      sessionStorage.setItem("services", JSON.stringify(uniqueServices)); // Save to sessionStorage
       setError(""); // Clear error on successful fetch
     } catch (err) {
       setError(err.response?.data?.message || "Failed to fetch Inboxes");
@@ -173,14 +172,14 @@ const Approved = () => {
     fetchServices();
 
     // Set an interval to fetch services every 10 seconds
-    const interval = setInterval(fetchServices, 10000);
+    const interval = setInterval(fetchServices, 3000);
 
     // Cleanup the interval on unmount
     return () => clearInterval(interval);
   }, []); // Empty dependency array to run only on mount
 
   // if (loading) return <div style={styles.loading}>Loading services...</div>;
-  if (error) return <div style={styles.error}>Error: {error}</div>;
+  if (error) return <div style={styles.error}>Sorry : {error}</div>;
 
   return (
     <div style={styles.container}>
@@ -230,6 +229,9 @@ const styles = {
     textAlign: "center",
     color: "red",
     fontSize: "1.2rem",
+    // backgroundColor: "teal",
+    height: 200,
+    padding: 50,
   },
   noServices: {
     textAlign: "center",

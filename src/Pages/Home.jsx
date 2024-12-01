@@ -111,7 +111,7 @@ const Home = () => {
     <Container
       style={{
         flex: 1,
-        backgroundColor: "lightblue",
+        backgroundColor: "whitesmoke",
       }}
     >
       <Container
@@ -121,16 +121,9 @@ const Home = () => {
           alignItems: "center",
           marginTop: 32,
           backgroundColor: "lightblue",
+          marginTop: "30px",
         }}
-      >
-        <Typography
-          variant="h4"
-          gutterBottom
-          style={{ borderBottom: "2px solid #4caf50", paddingBottom: "8px" }}
-        >
-          Inbox
-        </Typography>
-      </Container>
+      ></Container>
 
       <Inbox />
     </Container>

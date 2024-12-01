@@ -17,17 +17,9 @@ const Publications = () => {
           display: "flex",
           justifyContent: "center",
           alignItems: "center",
-          marginTop: 32,
+          marginTop: 40,
         }}
-      >
-        <Typography
-          variant="h4"
-          gutterBottom
-          style={{ borderBottom: "2px solid #4caf50", paddingBottom: "8px" }}
-        >
-          Approved Customers
-        </Typography>
-      </Container>
+      ></Container>
       <Approved />
     </Container>
   );

@@ -56,7 +56,14 @@ const Register = () => {
           headers: {
             "Content-Type": "application/json",
           },
-          body: JSON.stringify({ identifier, password }),
+          body: JSON.stringify({
+            name,
+            organization,
+            email,
+            phone,
+            role,
+            password,
+          }), // Updated the body to send the necessary data
         }
       );
 
@@ -64,13 +71,15 @@ const Register = () => {
 
       if (response.ok) {
         const userData = data.user;
-        localStorage.setItem("userId", userData.id);
-        localStorage.setItem("token", data.token);
-        localStorage.setItem("role", userData.role);
-        localStorage.setItem("name", userData.name);
-        localStorage.setItem("organization", userData.organization);
-        localStorage.setItem("email", userData.email);
-        localStorage.setItem("phone", userData.phone);
+
+        // Replace localStorage with sessionStorage
+        sessionStorage.setItem("userId", userData.id);
+        sessionStorage.setItem("token", data.token);
+        sessionStorage.setItem("role", userData.role);
+        sessionStorage.setItem("name", userData.name);
+        sessionStorage.setItem("organization", userData.organization);
+        sessionStorage.setItem("email", userData.email);
+        sessionStorage.setItem("phone", userData.phone);
 
         register(data.token);
         navigate("/home");
@@ -78,7 +87,7 @@ const Register = () => {
         setError(data.message);
       }
     } catch (error) {
-      console.error("Login failed", error);
+      console.error("Registration failed", error);
       setError("Something went wrong. Please try again.");
     } finally {
       setLoading(false);
@@ -144,7 +153,6 @@ const Register = () => {
               onChange={(e) => setOrganization(e.target.value)}
               label="Company"
             >
-              {/* Replace these MenuItem values with the actual organization options */}
               <MenuItem value="Asante Waste Management">
                 Asante Waste Management
               </MenuItem>
@@ -164,7 +172,6 @@ const Register = () => {
               <MenuItem value="Aquila Recycling Plant">
                 Aquila Recycling Plant
               </MenuItem>
-              {/* Add more organizations as needed */}
             </Select>
           </FormControl>
           <TextField

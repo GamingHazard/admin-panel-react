@@ -22,7 +22,13 @@ const Navbar = () => {
   return (
     <AppBar
       position="static"
-      style={{ background: "#3b6d3b", color: "#fbfbda" }}
+      style={{
+        background: "#3b6d3b",
+        color: "#fbfbda",
+        position: "fixed",
+        top: -10,
+        left: -5,
+      }}
     >
       <Toolbar>
         <IconButton
