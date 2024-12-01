@@ -179,12 +179,12 @@ const Approved = () => {
     return () => clearInterval(interval);
   }, []); // Empty dependency array to run only on mount
 
-  if (loading) return <div style={styles.loading}>Loading services...</div>;
+  // if (loading) return <div style={styles.loading}>Loading services...</div>;
   if (error) return <div style={styles.error}>Error: {error}</div>;
 
   return (
     <div style={styles.container}>
-      <h2 style={{ textAlign: "center", color: "#3b6d3b" }}>Inbox</h2>
+      {/* <h2 style={{ textAlign: "center", color: "#3b6d3b" }}>Inbox</h2> */}
       {services.length === 0 ? (
         <p style={styles.noServices}>No services found.</p>
       ) : (
