@@ -137,7 +137,7 @@ const Business = () => {
           display: "flex",
           justifyContent: "center",
           alignItems: "center",
-          height: 200,
+          marginTop: "60px",
         }}
       >
         <Typography

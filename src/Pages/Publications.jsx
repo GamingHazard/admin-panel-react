@@ -17,6 +17,7 @@ const Publications = () => {
           display: "flex",
           justifyContent: "center",
           alignItems: "center",
+          marginTop: "80px",
         }}
       ></Container>
       <Approved />

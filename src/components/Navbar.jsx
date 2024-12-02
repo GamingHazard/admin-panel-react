@@ -72,7 +72,7 @@ const Navbar = () => {
             <Button
               color="inherit"
               component={RouterLink}
-              to="/users"
+              to="/authors"
               startIcon={<Settings style={{ color: "#fbfbda" }} />}
             >
               Settings
