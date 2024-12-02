@@ -13,7 +13,7 @@ import { useAuth } from "../context/AuthContext";
 const Navbar = () => {
   const { isAuthenticated, logout } = useAuth();
   const navigate = useNavigate();
-  const organization = localStorage.getItem("organization");
+  const organization = sessionStorage.getItem("organization");
   const handleLogout = () => {
     logout();
     navigate("/");
